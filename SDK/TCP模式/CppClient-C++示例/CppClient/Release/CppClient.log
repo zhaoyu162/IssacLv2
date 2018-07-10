@@ -1,0 +1,26 @@
+﻿  stdafx.cpp
+  CppClient.cpp
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(47): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(47): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(123): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(123): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(144): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(144): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(162): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(162): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(172): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(172): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(251): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(251): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(270): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(270): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(304): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(304): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(320): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(320): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(81): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\../DataHack/structs.h(81): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+  CppClient.cpp(48): note: 参见对正在编译的 类 模板 实例化 "_Datagram<QuoteL1>" 的引用
+CppClient.cpp(51): warning C4018: “<”: 有符号/无符号不匹配
+  PackageExactor.cpp
+LINK : fatal error LNK1181: 无法打开输入文件“PocoNet.lib”

@@ -1,0 +1,27 @@
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\Debug_newdzh2\DZHClient.exe.config
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\Debug_newdzh2\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\Debug_newdzh2\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\Debug_newdzh2\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\Debug_newdzh2\DZHClient.pdb
+c:\dzh365\DZHClient.exe.config
+c:\dzh365\DZHClient.exe
+c:\dzh365\DZHClient.pdb
+c:\dzh365\amd64\libzmq.so
+c:\dzh365\amd64\libzmq.dll
+c:\dzh365\amd64\libsodium.so
+c:\dzh365\amd64\libsodium.dll
+c:\dzh365\i386\libzmq.so
+c:\dzh365\i386\libzmq.dll
+c:\dzh365\i386\libsodium.so
+c:\dzh365\i386\libsodium.dll
+C:\dzh365_debug\amd64\libzmq.so
+C:\dzh365_debug\amd64\libzmq.dll
+C:\dzh365_debug\amd64\libsodium.so
+C:\dzh365_debug\amd64\libsodium.dll
+C:\dzh365_debug\i386\libzmq.so
+C:\dzh365_debug\i386\libzmq.dll
+C:\dzh365_debug\i386\libsodium.so
+C:\dzh365_debug\i386\libsodium.dll
+C:\dzh365_debug\DZHClient.exe.config
+C:\dzh365_debug\DZHClient.exe
+C:\dzh365_debug\DZHClient.pdb

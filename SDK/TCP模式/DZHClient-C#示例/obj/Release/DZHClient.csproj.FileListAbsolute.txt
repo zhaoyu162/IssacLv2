@@ -1,0 +1,25 @@
+C:\yoyotek\DZHClient.exe.config
+C:\yoyotek\DZHClient.exe
+C:\yoyotek\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\Release\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\Release\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\Release\DZHClient.csprojResolveAssemblyReference.cache
+C:\yoyotek\amd64\libzmq.so
+C:\yoyotek\amd64\libzmq.dll
+C:\yoyotek\amd64\libsodium.so
+C:\yoyotek\amd64\libsodium.dll
+C:\yoyotek\i386\libzmq.so
+C:\yoyotek\i386\libzmq.dll
+C:\yoyotek\i386\libsodium.so
+C:\yoyotek\i386\libsodium.dll
+D:\yoyotek\amd64\libzmq.so
+D:\yoyotek\amd64\libzmq.dll
+D:\yoyotek\amd64\libsodium.so
+D:\yoyotek\amd64\libsodium.dll
+D:\yoyotek\i386\libzmq.so
+D:\yoyotek\i386\libzmq.dll
+D:\yoyotek\i386\libsodium.so
+D:\yoyotek\i386\libsodium.dll
+D:\yoyotek\DZHClient.exe.config
+D:\yoyotek\DZHClient.exe
+D:\yoyotek\DZHClient.pdb

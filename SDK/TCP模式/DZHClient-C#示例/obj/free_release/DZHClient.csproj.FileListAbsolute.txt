@@ -1,0 +1,5 @@
+C:\yoyotek\DZHClient.exe.config
+C:\yoyotek\DZHClient.exe
+C:\yoyotek\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\free_release\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\free_release\DZHClient.pdb

@@ -1,0 +1,23 @@
+﻿  CppClient.cpp
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(47): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(47): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(123): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(123): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(144): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(144): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(162): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(162): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(172): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(172): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(215): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(215): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(249): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(249): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(265): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(265): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(81): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\datahack\structs.h(81): note: 默认构造函数或 copy/move 赋值运算符将忽略此成员
+  d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\cppclient.cpp(49): note: 参见对正在编译的类 模板 实例化“_Datagram<QuoteL1>”的引用
+d:\extension\tfs source\misc\crack-dzh\dzhdeath\cppclient\cppclient.cpp(52): warning C4018: “<”: 有符号/无符号不匹配
+  CppClient.vcxproj -> D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\Debug\CppClient.exe
+  CppClient.vcxproj -> D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\Debug\CppClient.pdb (Full PDB)

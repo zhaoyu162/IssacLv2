@@ -1,0 +1,29 @@
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\amd64\libzmq.so
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\amd64\libzmq.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\amd64\libsodium.so
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\amd64\libsodium.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\i386\libzmq.so
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\i386\libzmq.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\i386\libsodium.so
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\i386\libsodium.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\DZHClient.exe.config
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\ZeroMQ.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Release\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Release\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\Newtonsoft.Json.dll
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\bin\x86\Release\Newtonsoft.Json.xml
+c:\dzh365\amd64\libzmq.so
+c:\dzh365\amd64\libzmq.dll
+c:\dzh365\amd64\libsodium.so
+c:\dzh365\amd64\libsodium.dll
+c:\dzh365\i386\libzmq.so
+c:\dzh365\i386\libzmq.dll
+c:\dzh365\i386\libsodium.so
+c:\dzh365\i386\libsodium.dll
+c:\dzh365\DZHClient.exe.config
+c:\dzh365\DZHClient.exe
+c:\dzh365\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Release\DZHClient.csproj.CoreCompileInputs.cache
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Release\DZHClient.csprojResolveAssemblyReference.cache

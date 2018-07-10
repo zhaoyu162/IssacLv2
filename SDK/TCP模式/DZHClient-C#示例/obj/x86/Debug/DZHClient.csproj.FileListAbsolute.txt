@@ -1,0 +1,26 @@
+c:\dzh365_debug\amd64\libzmq.so
+c:\dzh365_debug\amd64\libzmq.dll
+c:\dzh365_debug\amd64\libsodium.so
+c:\dzh365_debug\amd64\libsodium.dll
+c:\dzh365_debug\i386\libzmq.so
+c:\dzh365_debug\i386\libzmq.dll
+c:\dzh365_debug\i386\libsodium.so
+c:\dzh365_debug\i386\libsodium.dll
+c:\dzh365_debug\DZHClient.exe.config
+c:\dzh365_debug\DZHClient.exe
+c:\dzh365_debug\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Debug\DZHClient.exe
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Debug\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Debug\DZHClient.csproj.CoreCompileInputs.cache
+c:\dzh365\amd64\libzmq.so
+c:\dzh365\amd64\libzmq.dll
+c:\dzh365\amd64\libsodium.so
+c:\dzh365\amd64\libsodium.dll
+c:\dzh365\i386\libzmq.so
+c:\dzh365\i386\libzmq.dll
+c:\dzh365\i386\libsodium.so
+c:\dzh365\i386\libsodium.dll
+c:\dzh365\DZHClient.exe.config
+c:\dzh365\DZHClient.exe
+c:\dzh365\DZHClient.pdb
+D:\extension\tfs source\Misc\Crack-DZH\DzhDeath\DZHClient\obj\x86\Debug\DZHClient.csprojResolveAssemblyReference.cache
