@@ -1,0 +1,44 @@
+﻿{
+  "AskPrices": [
+    1050,
+    1051,
+    1053,
+    1054,
+    1055
+  ],
+  "AskVolumes": [
+    492,
+    1,
+    276,
+    239,
+    181
+  ],
+  "BidPrices": [
+    1049,
+    1048,
+    1047,
+    1046,
+    1045
+  ],
+  "BidVolumes": [
+    20,
+    106,
+    191,
+    248,
+    339
+  ],
+  "High": 1055,
+  "HighLimit": 1152,
+  "Low": 1047,
+  "LowLimit": 942,
+  "Open": 1048,
+  "PrevClose": 1047,
+  "Price": 1050,
+  "SellVolume": 1801,
+  "StockCode": "SH600216",
+  "StockName": "浙江医药",
+  "Time": 1506303738,
+  "TotalAmount": 3949683.0,
+  "TotalDealtOrderNum": 243,
+  "TotalVolume": 3755
+}
