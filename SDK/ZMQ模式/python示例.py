@@ -1,162 +1,241 @@
 #!/usr/bin/env python
-# -*- coding: gb2312 -*-
+# -*- coding: utf-8 -*-
 
-import time
-import zmq
+import time, datetime
 import struct
-import numpy as np
 import threading
 import urllib2
 import random
+import socket
+import os
+import sys
 
-class ThsMarket():
-    ZMQ_HOST = 'tcp://127.0.0.1:19908'
-    SUBSCRIBE_URI = 'http://localhost:10010/requestqx?list='
+from datetime import datetime, timedelta
 
-    _context = None
-    _socket = None
-    _recv_thread = None
-    _recv_run_flag = False
+reload(sys)
 
-    parse_buy_1_queue_only = True
+class stock_entity():
+    def __init__(self):
+        self.highAskPrices = [None] * 5
+        self.highAskVolums = [None] * 5
+        self.highBidPrices = [None] * 5
+        self.highBidVolums = [None] * 5
+        self.lowAskPrices = [None] * 5
+        self.lowAskVolums = [None] * 5
+        self.lowBidPrices = [None] * 5
+        self.lowBidVolums = [None] * 5
+        self.quoteTime = None
+
+class MarketThs():
+    UDP_HOST = '127.0.0.1'
+    UDP_PORT = 12425
+    SUBSCRIBE_SZL2_URI = 'http://localhost:10010/requestqx?list='
+    SUBSCRIBE_SHL2_URI = 'http://localhost:10010/requestl2?list='
+
 
     def __init__(self):
-        pass
+        self._context = None
+        self._socket = None
+        self._recv_thread = None
+        self._recv_run_flag = False
+        self._message_buffer = []
+        
+        self._parse_thread = None
+        self._parse_run_flag = False
+
+        self.parse_buy_1_queue_only = True
+
+        self.order_queue_callback = None
+        self.quotes_callback = None
+        self.last_print_time = None
+
+        self._stockmap = dict()
+
 
     def __del__(self):
         self.disconnect()
 
-    # Á¬½ÓZeroMQ
+
     def connect(self):
         self.disconnect()
-        self._context = zmq.Context()
-        self._socket = self._context.socket(zmq.SUB)
-        self._socket.connect(self.ZMQ_HOST)
-        '''
-        ¿É¶©ÔÄµÄÖ÷Ìâ£º
-            WDPK = Level1 ÎåµµÅÌ¿Ú(ÎŞĞ§£©
-            SDPK = Level2 Ê®µµÅÌ¿Ú£¨ÎŞĞ§£©
-            ZBCJ = Öğ±Ê³É½»
-            ZBWT = Öğ±ÊÎ¯ÍĞ£¨È«Ï¢ÅÌ¿Ú£©
-            BDPK = °ÙµµÅÌ¿Ú
-            ZBDD = Öğ±Ê´óµ¥
-            SZQQ = ÆÚÈ¨
-        '''
-        self._socket.setsockopt(zmq.SUBSCRIBE, '')
 
-        # self._recv_run_flag = True
-        # self._recv_thread = threading.Thread(target=self._recv_loop)
-        # self._recv_thread.start()
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # self._socket.setblocking(1)
+        self._socket.bind((self.UDP_HOST, self.UDP_PORT))
+        
+        # è®¾ç½®æ¥æ”¶ç¼“å­˜ä¸º5M
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 5*1024*1024)
+        print 'Recv Buffer size is:',self._socket.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
+        # self._socket.settimeout(1)
+  
+        print 'Start receving quotes...'
 
-    # ¶Ï¿ªÁ¬½Ó
+        for n in range(1):
+            self._recv_run_flag = True
+            self._recv_thread = threading.Thread(target=self._recv_loop)
+            self._recv_thread.start()
+            self._parse_run_flag = True
+            self._parse_thread = threading.Thread(target=self._parse_loop)
+            self._parse_thread.start()
+        
+    # æ–­å¼€è¿æ¥
     def disconnect(self):
-        # if self._recv_thread is not None:
-        #     self._recv_run_flag = False
-        #     self._recv_thread.join()
-        #
         if self._socket is not None:
-            self._socket.disconnect(self.ZMQ_HOST)
-            self._socket = None
-            self._context.destroy()
+            self._socket.close()
             self._context = None
 
-    # ¶©ÔÄ´«ÈëµÄ¹ÉÆ±£¬¹ÉÆ±´úÂë¸ñÊ½ÎªSZ000001, SH600858..etc.
-    def subscribe(self, security_list):
+        if self._recv_thread is not None:
+            self._recv_run_flag = False
+            if self._recv_thread.is_alive():
+                self._recv_thread.join()
+            self._recv_thread = None
+
+        if self._parse_thread is not None:
+            self._parse_run_flag = False
+            if self._parse_thread.is_alive():
+                self._parse_thread.join()
+            self._parse_thread = None
+
+
+        self._message_buffer = []
+
+
+    def subscribe_szLv2(self, security_list):
         send_headers = {
             'Cache-Control': 'no-cache'
         }
 
         param = ','.join(security_list)
-        url = self.SUBSCRIBE_URI + param
-        url += '&rnd=' + str(int(random.random() * 1000000000))
+        url = self.SUBSCRIBE_SZL2_URI + param
         req = urllib2.Request(url, headers=send_headers)
         try:
             response = urllib2.urlopen(req, timeout=10)
-            response.read()
+            resp = response.read()
+            print 'subscribe_szlv2 response:', resp
             return True
         except:
             return False
 
-    # ½âÎöÊÕµ½µÄÏûÏ¢
+    def subscribe_shLv2(self, security_list):
+        send_headers = {
+            'Cache-Control': 'no-cache'
+        }
+
+        param = ','.join(security_list)
+        url = self.SUBSCRIBE_SHL2_URI + param
+        req = urllib2.Request(url, headers=send_headers)
+        try:
+            response = urllib2.urlopen(req, timeout=10)
+            resp = response.read()
+            print 'subscribe_shl2 response:', resp
+            return True
+        except:
+            return False
+
+    def getMarketTenLevels(self, stockCode):
+        return self._stockmap.get(stockCode)
+
+    # è§£ææ”¶åˆ°çš„æ¶ˆæ¯
     def _parse(self, msg):
         msg_type = struct.unpack('i', msg[:4])[0]
         #print 'msg_type', msg_type
-        # 5µµÅÌ¿Ú(·ÏÆú£©
+        # 5æ¡£ç›˜å£
         if msg_type == 0:
+            self._parse_low_fives(msg)
             pass
-        # 10µµÅÌ¿Ú(·ÏÆú£©
+        # 10æ¡£ç›˜å£(åºŸå¼ƒï¼‰
         elif msg_type == 1:
             pass
-        # Öğ±Ê³É½»Êı¾İ
+        # é€ç¬”æˆäº¤æ•°æ®
         elif msg_type == 4:
             self._parse_transaction(msg)
-        # Öğ±ÊÎ¯ÍĞÊı¾İ(È«Ï¢ÅÌ¿Ú)
+            pass
+        # é€ç¬”å§”æ‰˜æ•°æ®(å…¨æ¯ç›˜å£)
         elif msg_type == 5:
             self._parse_order_queue(msg)
-        # ¸ßÎåµµÅÌ¿ÚÊı¾İ
-        elif msg_type == 6:
             pass
-        # °ÙµµÅÌ¿Ú
+        # é«˜äº”æ¡£ç›˜å£æ•°æ®
+        elif msg_type == 6:
+            self._parse_high_five(msg)
+            pass
+        # ç™¾æ¡£ç›˜å£
         elif msg_type == 7:
             self._parse_quotes(msg)
-        # Öğ±Ê´óµ¥Êı¾İ
+            pass
+        # é€ç¬”å¤§å•æ•°æ®
         elif msg_type == 8:
-            self._parse_big_order(msg)
-        # ÆÚÈ¨Êı¾İ
+            #self._parse_big_order(msg)
+            pass
+        # æœŸæƒæ•°æ®
         elif msg_type == 10:
             pass
 
+    # def _parse_five_levels(self, msg):
+    #     count,size = struct.unpack('2i',msg)
     '''
-    ½âÎöÂòÂô¶ÓÁĞ
-    ×¢Òâ£º
-        Èç¹ûparse_buy_1_queue_only=TrueÔòÖ»½âÎöÂòÒ»¶ÓÁĞ
-    ·µ»Ø:
-        code - ¹ÉÆ±´úÂë
-        buy_queue - Âò¶ÓÁĞµÄÊı×é
-        sell_queue - Âô¶ÓÁĞµÄÊı×é£¬ÂòÂô¶ÓÁĞÊı×éµÄitemÎªtuple (price, vol_num, vol_list)
-            price - Î¯ÍĞ¼Û£¨µ¥Î»£º·Ö£©
-            vol_num - Î¯ÍĞ¸öÊı
-            vol_list - Î¯ÍĞÁĞ±í£¨tupleÀàĞÍ£©
+    è§£æä¹°å–é˜Ÿåˆ—
+    æ³¨æ„ï¼š
+        å¦‚æœparse_buy_1_queue_only=Trueåˆ™åªè§£æä¹°ä¸€é˜Ÿåˆ—
+    è¿”å›:
+        code - è‚¡ç¥¨ä»£ç 
+        buy_queue - ä¹°é˜Ÿåˆ—çš„æ•°ç»„
+        sell_queue - å–é˜Ÿåˆ—çš„æ•°ç»„ï¼Œä¹°å–é˜Ÿåˆ—æ•°ç»„çš„itemä¸ºtuple (price, vol_num, vol_list)
+            price - å§”æ‰˜ä»·ï¼ˆå•ä½ï¼šåˆ†ï¼‰
+            vol_num - å§”æ‰˜ä¸ªæ•°
+            vol_list - å§”æ‰˜åˆ—è¡¨ï¼ˆtupleç±»å‹ï¼‰
     '''
     def _parse_order_queue(self, msg):
         list_start = 64
         block_size, code, name, un_used, count_of_ints = struct.unpack('1I16s32s2I', msg[4:list_start])
-        # print block_size, code, count_of_ints
-
+        #for test
+        #if code[:8] != 'SZ000001':
+        #    return
+            
         buy_queue = []
         sell_queue = []
         read_ints = 0
+        print 'Get order queue of ', code, ' count is:',count_of_ints
         while read_ints < count_of_ints:
-            # buy 16384, sell 32768
+            # buy 16384, sell -32768
             price, buy_or_sell, vol_num = struct.unpack('1H1h1I', msg[list_start:list_start + 8])
-            # print price, buy_or_sell, vol_num
             list_start += 8
+            read_ints += 2 + vol_num
+            # å¿½ç•¥é˜Ÿåˆ—æ•°é‡ä¸º0æˆ–50çš„æ— æ•ˆæ•°æ®
+            if vol_num == 0 or vol_num == 50:
+                return
+
             list_end = list_start + vol_num * 4
             vol_list = struct.unpack(str(vol_num) + 'I', msg[list_start: list_end])
+
             list_start = list_end
-            read_ints += 2 + vol_num
 
             if buy_or_sell == 16384:
                 buy_queue.append((price, vol_num, vol_list,))
             else:
                 sell_queue.append((price, vol_num, vol_list,))
-
+  
             if self.parse_buy_1_queue_only:
-                print 'order queue', len(vol_list), vol_list[:10]
+                # for test
+                print 'order queue', datetime.now(), code, vol_num, price, vol_list[:5]
+                #if code[:8] == 'SZ000001':
+                #    print 'order queue', datetime.datetime.now(), code, vol_num, price, vol_list[:5]
                 break
-        return code, buy_queue, sell_queue
+
+        if self.order_queue_callback is not None:
+            self.order_queue_callback((code[2:8], buy_queue, sell_queue,))
+        #return code, buy_queue, sell_queue
 
     '''
-    ½âÎö°ÙµµÅÌ¿Ú
-    ·µ»Ø:
-        code - ¹ÉÆ±´úÂë, SZ000001, SH600858..etc.
-        buy_quotes - ÂòµµÊı¾İ, Êı×é
-        sell_quotes - ÂôµµÊı¾İ£¬ Êı×é
-            ÂòÂôµµÊı¾İitemÎªtupleÀàĞÍ(level_num, price, volume, order_num)
-                level_num - µµÎ»£¬ÕıÊı±íÊ¾Âôµµ£¬¸ºÊı±íÊ¾Âòµµ(Ææ¹ÖµÄ±íÊ¾·½Ê½£¬×¢Òâ²»Òª¸ã·´£©
-                price - Î¯ÍĞ¼Û¸ñ£¨µ¥Î»£º·Ö£©
-                volume - Î¯ÍĞÊıÁ¿£¨µ¥Î»£º¹É£©
-                order_num - Î¯ÍĞ±ÊÊı
+    è§£æç™¾æ¡£ç›˜å£
+    è¿”å›:
+        code - è‚¡ç¥¨ä»£ç , SZ000001, SH600858..etc.
+        buy_quotes - ä¹°æ¡£æ•°æ®, æ•°ç»„
+        sell_quotes - å–æ¡£æ•°æ®ï¼Œ æ•°ç»„
+            ä¹°å–æ¡£æ•°æ®itemä¸ºtupleç±»å‹(level_num, price, volume, order_num)
+                level_num - æ¡£ä½ï¼Œæ­£æ•°è¡¨ç¤ºå–æ¡£ï¼Œè´Ÿæ•°è¡¨ç¤ºä¹°æ¡£(å¥‡æ€ªçš„è¡¨ç¤ºæ–¹å¼ï¼Œæ³¨æ„ä¸è¦æåï¼‰
+                price - å§”æ‰˜ä»·æ ¼ï¼ˆå•ä½ï¼šåˆ†ï¼‰
+                volume - å§”æ‰˜æ•°é‡ï¼ˆå•ä½ï¼šæ‰‹ï¼‰
+                order_num - å§”æ‰˜ç¬”æ•°
     '''
     def _parse_quotes(self, msg):
         list_start = 60
@@ -167,44 +246,117 @@ class ThsMarket():
         for i in range(count):
             quote = struct.unpack('1i3I', msg[list_start: list_start + 16])
             if quote[0] > 0:
-                buy_quotes.append(quote)
-            else:
                 sell_quotes.append(quote)
+            else:
+                buy_quotes.append(quote)
+                if self.parse_buy_1_queue_only:
+                    if code[:8] == 'SZ000001':
+                        print 'buy sell quotes', datetime.now(), code, buy_quotes[0]
+                    break
             list_start += 16
-        print 'buy sell quotes', code, buy_quotes[:1], sell_quotes[:1]
+
+        if self.quotes_callback:
+            self.quotes_callback((code[2:8], buy_quotes, sell_quotes,))
         return code, buy_quotes, sell_quotes
 
+    def _print_ask_bids(self,stock,code):
+        if code != 'SZ300059':
+            return
+        print code,'ask & bids levels @',stock.quoteTime
+        print '====================================='
+        for n in range(5):
+            print stock.highAskPrices[4-n],'   ',stock.highAskVolums[4-n]
+        for n in range(5):
+            print stock.lowAskPrices[4-n],'   ',stock.lowAskVolums[4-n]
+        print '-------------------------------------'
+        for n in range(5):
+            print stock.lowBidPrices[n],'   ',stock.lowBidVolums[n]
+        for n in range(5):
+            print stock.highBidPrices[n],'   ',stock.highBidVolums[n]
+
+    def _parse_high_five(self, msg):
+        list_start = 56
+        size, code, name = struct.unpack('1I16s32s', msg[4:list_start])
+        filename = 'sdpk/{}.txt'.format(code[:8])
+        if not os.path.exists(os.path.dirname(filename)):
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+
+        fl = open(filename, 'w+')
+        # 
+        allvalues=struct.unpack('24f',msg[69:165])
+
+        # summary,bidps,askps=struct.unpack('4f10f10f',msg[69:165])
+        #print>>fl, 'High-Five_Levels'
+        #print>>fl, 'buy prices:{}'.format(allvalues[4:9])
+        #print>>fl, 'buy vols:{}'.format(allvalues[9:14])
+        #print>>fl, 'sell prices:{}'.format(allvalues[14:19])
+        #print>>fl, 'sell vols{}'.format(allvalues[19:24])
+
+        stock = self._stockmap.get(code[:8])
+        if None == stock:
+            stock = stock_entity()
+            self._stockmap[code] = stock
+
+        for n in range(5):
+            stock.highAskPrices[n] = allvalues[14:19][n]
+            stock.highBidPrices[n] = allvalues[4:9][n]
+            stock.highAskVolums[n] = allvalues[19:24][n]
+            stock.highBidVolums[n] = allvalues[9:14][n]
+
+        self._print_ask_bids(stock,code[:8])
     '''
-    ½âÎöÖğ±Ê³É½»(×¢Òâ£ºÍ¬ÑùµÄ°ü»áÊÕµ½Á½´Î£©
-    ·µ»Ø£º
+    è§£æé€ç¬”æˆäº¤
+    è¿”å›ï¼š
         code - 
-        count - ³É½»¼ÇÂ¼Êı
-        pack_index - °üĞòÁĞ£¬´Ó0¿ªÊ¼£¬Çë°´ÕÕÕâ¸öĞòºÅ½øĞĞÅÅĞòÖØĞÂ×éºÏÈ«²¿µÄ°ü
-        transactions - ³É½»Êı¾İÁĞ±í£¬itemÎªÔª×é(time, price, vol)
-            time - ³É½»Ê±¼ä
-            price - ³É½»¼Û(µ¥Î»£º·Ö£©
-            vol - ³É½»Á¿£¨µ¥Î»£º¹É£©
+        count - æˆäº¤è®°å½•æ•°
+        pack_index - åŒ…åºåˆ—ï¼Œä»0å¼€å§‹ï¼Œè¯·æŒ‰ç…§è¿™ä¸ªåºå·è¿›è¡Œæ’åºé‡æ–°ç»„åˆå…¨éƒ¨çš„åŒ…
+        transactions - æˆäº¤æ•°æ®åˆ—è¡¨ï¼Œitemä¸ºå…ƒç»„(time, price, vol)
+            time - æˆäº¤æ—¶é—´
+            price - æˆäº¤ä»·(å•ä½ï¼šåˆ†ï¼‰
+            vol - æˆäº¤é‡ï¼ˆå•ä½ï¼šè‚¡ï¼‰
     '''
     def _parse_transaction(self, msg):
         list_start = 64
         count, latest_num, pack_index, code, name = struct.unpack('3I16s32s', msg[4:list_start])
+        filename = 'zbcj/{}.txt'.format(code[:8])
+        if not os.path.exists(os.path.dirname(filename)):
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
 
+        fl = open(filename, 'w+')
         transactions = []
         for i in range(count):
             t = struct.unpack('2I1i', msg[list_start: list_start+12])
             transactions.append(t)
             list_start += 12
-        print 'detail transaction', code, count, pack_index, transactions[-3:]
+            log = 'detail transaction:index={},price={},vol={},time={}'.format(
+                pack_index+i, t[-2], t[-1], datetime.fromtimestamp(t[-3]).strftime('%Y-%m-%d %H:%M:%S'))
+            if code[:8]=='SZ300059':
+                print>>fl,log
+                print log
+            # print logs
+        # if code[:8] == 'SZ000001':
         return code, count, pack_index, transactions
 
+    def getMarketTenLevels(self, stockCode):
+        stock = self._stockmap.get(stockCode)
+        return stock
+		
     '''
-    ½âÎöÖğ±Ê´óµ¥Êı¾İ
-        Ã¿´Î×î¶à·µ»Ø1000Ìõ£¬µ±ÊıÁ¿Ğ¡ÓÚ1000ÌõÊ±Îª×îĞÂÖğ±Ê´óµ¥³É½»Êı¾İ
-    ·µ»Ø£º
-        code - ¹ÉÆ±´úÂë
-        count - ´óµ¥¸öÊı
-        big_orders - ´óµ¥ÁĞ±í
-            ´óµ¥ÁĞ±íµÄtimeÎªtuple(pack_id, buy_order_id, sell_order_id, buy_price, sell_price, buy_vol, sell_vol) 
+    è§£æé€ç¬”å¤§å•æ•°æ®
+        æ¯æ¬¡æœ€å¤šè¿”å›1000æ¡ï¼Œå½“æ•°é‡å°äº1000æ¡æ—¶ä¸ºæœ€æ–°é€ç¬”å¤§å•æˆäº¤æ•°æ®
+    è¿”å›ï¼š
+        code - è‚¡ç¥¨ä»£ç 
+        count - å¤§å•ä¸ªæ•°
+        big_orders - å¤§å•åˆ—è¡¨
+            å¤§å•åˆ—è¡¨çš„timeä¸ºtuple(pack_id, buy_order_id, sell_order_id, buy_price, sell_price, buy_vol, sell_vol) 
     '''
     def _parse_big_order(self, msg):
         list_start = 56
@@ -218,23 +370,59 @@ class ThsMarket():
         print 'big order', code, count, big_orders[-5:]
         return code, count, big_orders
 
-
-    def test_loop(self):
-        self._recv_run_flag = True
-        self._recv_loop()
+    def _parse_low_fives(self, msg):
+        count = struct.unpack('i',msg[4:8])[0]
+        for i in range(count):
+            quote = struct.unpack("=16s16s3I1h1i5i1d1i5i5i5i5i1i1i", msg[12+i*170:12+(i+1)*170])
+            code  = quote[0][:8]
+            stock = self._stockmap.get(code)
+            if None == stock:
+                stock = stock_entity()
+                self._stockmap[code] = stock
+            bidps = struct.unpack("5i", msg[12+i*170+170-22*4:12+i*170+170-22*4+20])
+            bidvs = struct.unpack("5i", msg[12+i*170+170-17*4:12+i*170+170-17*4+20])
+            askps = struct.unpack("5i", msg[12+i*170+170-12*4:12+i*170+170-12*4+20])
+            askvs = struct.unpack("5i", msg[12+i*170+170-7*4:12+i*170+170-7*4+20])
+            for n in range(5):
+                stock.lowAskPrices[n] = askps[n]
+                stock.lowBidPrices[n] = bidps[n]
+                stock.lowAskVolums[n] = askvs[n]
+                stock.lowBidVolums[n] = bidvs[n]
+            unixdt = struct.unpack("I", msg[12+i*170+46:12+i*170+50])[0]
+            stock.quoteTime = datetime.fromtimestamp(unixdt).strftime('%Y-%m-%d %H:%M:%S')
+            self._print_ask_bids(stock,code)
 
     def _recv_loop(self):
         while self._recv_run_flag:
-            msg = self._socket.recv()
-            self._parse(msg)
+            try:
+                msg, addr = self._socket.recvfrom(65535)
+                self._message_buffer.append(msg)
+            except Exception, ex:
+                print str(ex)
+                pass
+
+    def _parse_loop(self):
+        while self._parse_run_flag:
+            l = len(self._message_buffer)
+            if l > 200 and (self.last_print_time is None or (datetime.now()-self.last_print_time).seconds > 1):
+                self.last_print_time = datetime.now()
+                print 'OVERLOAD ' + str(l)
+            if len(self._message_buffer) > 0:
+                msg = self._message_buffer.pop(0)
+                self._parse(msg)
+            else:
+                time.sleep(0.1)
 
 
 if __name__ == '__main__':
-    ths_market = ThsMarket()
-    ths_market.connect()
-    ths_market.subscribe(['SZ00001', 'SZ000002', 'SH601515'])
+    sys.setdefaultencoding('utf8')
+    
+    ths_market = MarketThs()
     try:
-        ths_market.test_loop()
+        ths_market.connect()
+        ths_market.subscribe_szLv2(['SZ300059'])
+        while True:
+            time.sleep(0.1)
     finally:
         ths_market.disconnect()
         del ths_market
