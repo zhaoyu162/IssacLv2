@@ -1,4 +1,4 @@
-// MateSDK.cpp : ¶¨Òå DLL Ó¦ÓÃ³ÌĞòµÄµ¼³öº¯Êı¡£
+// MateSDK.cpp : å®šä¹‰ DLL åº”ç”¨ç¨‹åºçš„å¯¼å‡ºå‡½æ•°ã€‚
 //
 
 #include "stdafx.h"
@@ -191,7 +191,7 @@ ATL::CComCriticalSection __csLock;
 
 						Json::Value jsvVols;
 						for (int j = 0; j < vols; j++) {
-							jsLevel["OrderVolumes"].append(msgdata->orddObj.nOrdersData[n + 1 + j]);
+							jsLevel["OrderVolumes"].append(msgdata->orddObj.nOrdersData[n + 2 + j]);
 						}
 
 						n += 2 + vols;
