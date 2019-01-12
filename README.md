@@ -55,15 +55,20 @@ http://localhost:10010/requestzbhis?list=SH600465,SH601378
 ```
 NOTE:requestl2和requestqx可以不同的股票列表，相互不会冲突，也不会覆盖，而是各自收取。
 ```
-### 5、2018年7月25号开始支持高速UDP模式和TCP模式，推荐使用UDP多线程并发监听端口的数据并处理。
+### 5、高速UDP模式和TCP模式，推荐使用UDP多线程并发监听端口的数据并处理。
 启用UDP模式：
 ```
-	修改Dataengine.ini,在[send_conf]组加入udp_port=xxxx, 如果xxxx=0,就不启用UDP;大于0则启用；
+修改Dataengine.ini,在[send_conf]组加入udp_port=xxxx, 如果xxxx=0,就不启用UDP;大于0则启用；
 ```
 启用TCP模式：（速度较慢，可能导致丢失数据）
 ```
-	修改Dataengine.ini,在[send_conf]组加入tcp_port=xxxx, 如果xxxx=0,就不启用UDP;大于0则启用；
+修改Dataengine.ini,在[send_conf]组加入tcp_port=xxxx, 如果xxxx=0,就不启用UDP;大于0则启用；
 ```
 原有的ZMQ模式配置维持不变，如果以上两者端口配置都是0，那么沿用ZMQ模式；udp和tcp都配置了的情况，UDP优先。
 ZMQ增加PUSH/PULL模式，在send_conf节点下增加zmq_pullmode=1就启用PUSH/PULL,而不是PUB/SUB.
 PUSH/PULL可以有多个线程PULL,增加数据获取速度，如果是ZMQ推荐使用PUSH/PULL!!!
+### 6、DLL方式接入行情
+提供MATESDK.DLL供客户快速接入开发，本DLL仅作为ZMQ PULL方式使用，因此服务器端dataengine.ini应该加一行配置：
+```
+zmq_pullmode=1
+```
