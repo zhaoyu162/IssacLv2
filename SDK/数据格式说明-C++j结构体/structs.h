@@ -251,6 +251,25 @@ typedef struct _QIQUAN_DATA_BLOCK_
 	QIQUAN_DATA buff[0];
 }QIQUAN_DATA_BLOCK, *LPQIQUAN_DATA_BLOCK;
 
+typedef struct _KLINE_DATA_
+{
+	int unixDt;
+	float open;
+	float high;
+	float low;
+	float close;
+	float volume;
+	float amount;
+	unsigned unknown;
+}KLINEDATA,*LPKLINEDATA;
+typedef struct _KLINE_DATA_BLOCK_
+{
+	int		nDgType;		// k线数据包类型：11
+	UINT	nCount;
+	char	strCode[16];//		股票代码
+	char	strName[32];//		股票名称
+	KLINEDATA data[0];
+};
 //////////////////////////////////////////////////////////////////////////
 // 本段的定义为二次开发准备
 typedef const LPQuoteL2	   LPCQuoteL2;
@@ -260,7 +279,7 @@ typedef ZHUBIDATAGRAM ZhubiDataGram;					// 接收方使用的逐笔成交数据格式
 typedef _ZHUBI_ORDER_DATAGRAM_ ZhubiOrderDataGram;		// 接收方使用的逐笔委托数据格式
 typedef HIGH_LVQUOTE_DATAGRAM HightLvQuoteDataGram;		// 接收方使用的高五档盘口数据
 typedef QIQUAN_DATA_BLOCK QiQuanDataGram;				// 接收方使用的期权数据格式
-
+typedef _KLINE_DATA_BLOCK_ KLINEDATABLOCK;				// 接收方使用的K线数据格式
 //////////////////////////////////////////////////////////////////////////
 // 大智慧软件五档行情数据块结构，内部使用，第三方不用涉及
 typedef struct FreeDataBlock
