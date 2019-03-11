@@ -1,0 +1,9 @@
+LIBRARY
+EXPORTS
+ConnectServer
+Subscribe
+GetData
+Disconnect
+GetErrString_ZMQ
+GetZMQErrNo_ZMQ
+GetQuote
