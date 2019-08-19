@@ -12,16 +12,16 @@ namespace DZHClient
     public class MateSdk
     {
         [DllImport("MateSDK.dll", CallingConvention=CallingConvention.Cdecl, CharSet=CharSet.Ansi)]
-        public extern static int ConnectServer(string strServer);
+        public extern static IntPtr ConnectServer(string strServer);
 
         [DllImport("MateSDK.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public extern static int Subscribe(string strChannel);
+        public extern static int Subscribe(IntPtr ptrZMQ, string strChannel);
 
         [DllImport("MateSDK.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public extern static int GetData(StringBuilder sb, int sbLen);
+        public extern static int GetData(IntPtr ptrZMQ, StringBuilder sb, int sbLen);
 
-        [DllImport("MateSDK.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public extern static int Disconnect(string strServer);
+        [DllImport("MateSDK.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.None)]
+        public extern static int Disconnect(IntPtr ptrZMQ, string strServer);
 
     }
 
@@ -29,12 +29,13 @@ namespace DZHClient
     {
         public SdkReceiver()
         {
-            var ncs = MateSdk.ConnectServer("tcp://127.0.0.1:19908");
-            MateSdk.Subscribe("");
+            socket_ptr = MateSdk.ConnectServer("tcp://127.0.0.1:19908");
+            MateSdk.Subscribe(socket_ptr,"");
         }
 
         DateTime _dtScrach = new DateTime(1970, 1, 1).AddHours(8);
         string _rootDir = null;
+        IntPtr socket_ptr = IntPtr.Zero;
 
         void CreateIfNotExist(string dir)
         {
@@ -57,7 +58,7 @@ namespace DZHClient
             while (true)
             {
                 sb.Clear();
-                var nr = MateSdk.GetData(sb, sb.Capacity);
+                var nr = MateSdk.GetData(socket_ptr,sb, sb.Capacity);
 
                 if (nr == 100)
                     continue;
