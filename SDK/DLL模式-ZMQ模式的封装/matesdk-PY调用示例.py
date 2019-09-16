@@ -13,15 +13,15 @@ import csv
 import os
 
 dll_quote = ctypes.CDLL(r'MateSdk_x64.dll') 
-
+socket = dll_quote.ConnectServer(r'tcp://127.0.0.1:19908');
 #print r'connect to zqm quote server result:' + connect_result
 channel = create_string_buffer(b"WDPK")
-dll_quote.Subscribe(channel)
+dll_quote.Subscribe(socket, channel)
 
 while (True):
     
     jbuff = create_string_buffer(1024*1024*10)
-    value = dll_quote.GetData(byref(jbuff), 1024*1024*10)
+    value = dll_quote.GetData(socket, byref(jbuff), 1024*1024*10)
     addr = addressof(jbuff)
 
 #    temps = string_at(addressof(jbuff))
