@@ -57,13 +57,14 @@ NOTE:requestl2和requestqx可以不同的股票列表，相互不会冲突，也
 ```
 #### （4）发送http请求
 ```
-http://localhost:10010/requestqq?S=0&E=300&market=SHQQ-A
+http://localhost:10010/requestqq?S=0&E=300
 ```
+上海期权
 ```
-market:上交所:SHQQ-A, 深交所：SZQQ-A
-S=0&E=300不用修改，写死即可。
+http://localhost:10010/requestqq?S=0&E=300&market=ZO
 ```
-（这是推送式上证所股票期权全市场行情！）
+深圳期权
+（这是推送式股票期权全市场行情！）
 
 ### 5、高速UDP模式和TCP模式，推荐使用UDP多线程并发监听端口的数据并处理。
 启用UDP模式：
